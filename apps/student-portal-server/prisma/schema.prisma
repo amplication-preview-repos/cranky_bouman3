@@ -1,0 +1,93 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  acceptanceLetters AcceptanceLetter[]
+  admissionLetters  AdmissionLetter[]
+  createdAt         DateTime                  @default(now())
+  email             String?
+  id                String                    @id @default(cuid())
+  name              String?
+  password          String?
+  payments          Payment[]
+  paymentStatus     EnumStudentPaymentStatus?
+  timetables        Timetable[]
+  updatedAt         DateTime                  @updatedAt
+}
+
+model Payment {
+  amount    Float?
+  createdAt DateTime              @default(now())
+  date      DateTime?
+  id        String                @id @default(cuid())
+  student   Student?              @relation(fields: [studentId], references: [id])
+  studentId String?
+  typeField EnumPaymentTypeField?
+  updatedAt DateTime              @updatedAt
+}
+
+model Lesson {
+  createdAt   DateTime             @default(now())
+  description String?
+  id          String               @id @default(cuid())
+  title       String?
+  typeField   EnumLessonTypeField?
+  updatedAt   DateTime             @updatedAt
+}
+
+model AdmissionLetter {
+  content   String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId String?
+  updatedAt DateTime @updatedAt
+}
+
+model Timetable {
+  content   String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId String?
+  updatedAt DateTime @updatedAt
+}
+
+model AcceptanceLetter {
+  content   String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId String?
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumStudentPaymentStatus {
+  Option1
+}
+
+enum EnumPaymentTypeField {
+  Option1
+}
+
+enum EnumLessonTypeField {
+  Option1
+}
